@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import Alamofire
 
 class ViewController: UIViewController {
     
@@ -19,189 +20,35 @@ class ViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        readDataFromURL(urlString: link)
+        requestData(url: link)
     }
     
     // MARK: - Methods
     
-    private func readDataFromURL(urlString: String) {
-//        let url = URL(string: urlString)
-//        let request = NSMutableURLRequest(url: url!)
-//        request.httpMethod = "GET"
-        
-        guard let endpoint = URL(string: urlString) else {
-            print("Error creating endpoint")
-            return
-        }
-        URLSession.shared.dataTask(with: endpoint) { (data, response, error) in
-            do {
-                if let data = data {
-                    if let json = try JSONSerialization.jsonObject(with: data, options: []) as? [String : Any] {
-                        print("data")
-                        print(json)
-                        print("response")
-                        print(response)
-                    } else {
-                        print("Error: \(error)")
-                    }
-                }
-//                
-//                
-//                guard let data = data else {
-//                    print("Error: No data")
-//                }
-//                guard let json = try JSONSerialization.jsonObject(with: data, options: []) as? NSDictionary else {
-//                    print("Error: Conversion failed")
-//                }
-//                print(json)
-            } catch {
-                print("Error: \(error)")
+    private func convertToDictionary(response: DataResponse<Any>) -> Array<Account> {
+        if let array = response.result.value as? Array<Dictionary<String, Any>> {
+            var result: Array<Account> = []
+            for dictionary in array {
+                let account = Account()
+                account.phone = dictionary["phone"] as? String ?? "No phone"
+                account.address = dictionary["address"] as? String ?? "No address"
+                account.age = dictionary["age"] as? Int64 ?? 0
+                account.company = dictionary["company"] as? String ?? "No company"
+                account.picture = dictionary["picture"] as? String ?? ""
+                account.email = dictionary["email"] as? String ?? "No email"
+                account.about = dictionary["about"] as? String ?? "No description"
+                account.name = dictionary["name"] as? [String : String] ?? ["first" : "No name"]
+                result.append(account)
             }
-        }.resume()
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-//        URLSession.shared.dataTask(with: url!, completionHandler: { (data, response, error) -> Void in
-//            if error != nil {
-//                print(error ?? "error")
-//                return
-//            }
-//            DispatchQueue.main.async(execute: { () -> Void in
-//                do {
-//                    let json = try JSONSerialization.jsonObject(with: data!, options: .mutableContainers) as? NSArray
-//                    if let parseJson = json {
-//                        if let accountsArray = parseJson as? [[String: Any]] {
-//                            for account in accountsArray {
-//                                for (key, value) in account {
-//                                    let account = Account()
-//                                    switch key {
-//                                    case "phone":
-//                                        if let phone = value as? String {
-//                                            account.phone = phone
-//                                        }
-//                                    case "address":
-//                                        if let address = value as? String {
-//                                            account.address = address
-//                                        }
-//                                    case "age":
-//                                        if let age = value as? Int64 {
-//                                            account.age = age
-//                                        }
-//                                    case "company":
-//                                        if let company = value as? String {
-//                                            account.company = company
-//                                        }
-//                                    case "picture":
-//                                        if let picture = value as? String {
-//                                            account.picture = picture
-//                                        }
-//                                    case "email":
-//                                        if let email = value as? String {
-//                                            account.email = email
-//                                        }
-//                                    case "about":
-//                                        if let about = value as? String {
-//                                            account.about = about
-//                                        }
-//                                    case "name":
-//                                        if let name = value as? [String : String] {
-//                                            account.name = name
-//                                        }
-//                                    default: print()
-//                                    }
-//                                    self.accounts.append(account)
-//                                }
-//                            }
-//                            self.updateData()
-//                        }
-//                    }
-//                } catch {
-//                    print("Error: \(error)")
-//                }
-//            })
-//        }).resume()
-        
-        
-        
-//        
-//        DispatchQueue.main.async(execute: {
-//            let task = URLSession.shared.dataTask(with: request as URLRequest) {
-//                data, response, error in
-//                if error != nil {
-//                    print("Error: \(error!.localizedDescription)")
-//                    DispatchQueue.main.sync(execute: {})
-//                    return
-//                }
-//                
-//                DispatchQueue.main.async(execute: {
-//                    do {
-//                        let json = try JSONSerialization.jsonObject(with: data!, options: .mutableContainers) as? NSArray
-//                        if let parseJson = json {
-//                            if let accountsArray = parseJson as? [[String: Any]] {
-//                                for account in accountsArray {
-//                                    for (key, value) in account {
-//                                        let account = Account()
-//                                        switch key {
-//                                        case "phone":
-//                                            if let phone = value as? String {
-//                                                account.phone = phone
-//                                            }
-//                                        case "address":
-//                                            if let address = value as? String {
-//                                                account.address = address
-//                                            }
-//                                        case "age":
-//                                            if let age = value as? Int64 {
-//                                                account.age = age
-//                                            }
-//                                        case "company":
-//                                            if let company = value as? String {
-//                                                account.company = company
-//                                            }
-//                                        case "picture":
-//                                            if let picture = value as? String {
-//                                                account.picture = picture
-//                                            }
-//                                        case "email":
-//                                            if let email = value as? String {
-//                                                account.email = email
-//                                            }
-//                                        case "about":
-//                                            if let about = value as? String {
-//                                                account.about = about
-//                                            }
-//                                        case "name":
-//                                            if let name = value as? [String : String] {
-//                                                account.name = name
-//                                            }
-//                                        default: print()
-//                                        }
-//                                        self.accounts.append(account)
-//                                    }
-//                                }
-//                                self.updateData()
-//                            }
-//                        }
-//                    } catch {
-//                        print("Error: \(error)")
-//                    }
-//                })
-//                
-//                
-//            }
-//            task.resume()
-//        })
-//        
-        
-        
-        
+            return result
+        }
+        return []
+    }
+    
+    public func requestData(url: String) {
+        Alamofire.request(url).responseJSON { (responseObject) -> Void in
+            self.accounts = self.convertToDictionary(response: responseObject)
+        }
     }
     
     private func updateData() {

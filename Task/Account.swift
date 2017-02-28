@@ -40,4 +40,13 @@ class Account {
         self.about = about
         self.name = name
     }
+    
+    public func nameToString() -> String {
+        var result = ""
+        let separator = " "
+        for (_, value) in name {
+            result += value + separator
+        }
+        return result
+    }
 }
