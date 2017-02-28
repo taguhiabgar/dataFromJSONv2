@@ -75,10 +75,8 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        print("Select: #\(indexPath.row)")
-        let vc = DetailViewController()
-        vc.account = accounts[indexPath.row]
-        navigationController?.pushViewController(vc, animated: true)
+        DetailViewController.account = accounts[indexPath.row]
+        performSegue(withIdentifier: "showDetail", sender: self)
     }
 }
 
