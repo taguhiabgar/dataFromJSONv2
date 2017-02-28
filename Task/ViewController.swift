@@ -15,6 +15,7 @@ class ViewController: UIViewController {
     
     @IBOutlet weak var tableView: UITableView!
     var accounts = [Account]()
+    fileprivate var placeholder = UIImage(named: placeholderImageName)
     
     // MARK: - Lifecycle
     
@@ -48,6 +49,7 @@ class ViewController: UIViewController {
     public func requestData(url: String) {
         Alamofire.request(url).responseJSON { (responseObject) -> Void in
             self.accounts = self.convertToDictionary(response: responseObject)
+            self.tableView.reloadData()
         }
     }
     
@@ -66,11 +68,8 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let account = accounts[indexPath.row]
         let cell = UITableViewCell()
-        var name = ""
-        for (_, value) in account.name {
-            name += value + " "
-        }
-        cell.textLabel?.text = name == "" ? "Name" : name
+        cell.textLabel?.text = account.nameToString()
+        cell.imageView?.image = placeholder
         cell.imageView?.imageFromUrl(url: account.picture)
         return cell
     }

@@ -9,4 +9,4 @@
 import Foundation
 
 let link = "http://58ac38c0f989751200f9932c.mockapi.io/Contact"
-let cellReuseIdentifier = "cell"
+let placeholderImageName = "placeholder"
